@@ -1,0 +1,34 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "app.myleadtech/mcp",
+  "title": "MyLeadTech HVAC",
+  "description": "HVAC MCP server — fault codes, model lookup and answers cited to the OEM manual page.",
+  "version": "0.1.0",
+  "websiteUrl": "https://myleadtech.app/developers/mcp",
+  "repository": {
+    "url": "https://github.com/MyLeadTech/myleadtech-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.myleadtech.app/mcp/",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "MyLeadTech API key from https://web.myleadtech.app, sent as a Bearer token.",
+          "isRequired": true,
+          "isSecret": true,
+          "value": "Bearer {api_key}",
+          "variables": {
+            "api_key": {
+              "description": "MyLeadTech API key",
+              "isRequired": true,
+              "isSecret": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
