@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "myleadtech-hvac",
+  "version": "0.1.0",
+  "description": "HVAC MCP server — fault codes, model lookup and answers cited to the OEM manual page.",
+  "author": { "name": "MyLeadTech", "url": "https://myleadtech.app" },
+  "homepage": "https://myleadtech.app/developers/mcp",
+  "repository": "https://github.com/MyLeadTech/myleadtech-mcp",
+  "license": "MIT",
+  "keywords": ["hvac", "fault-codes", "service-manuals", "carrier", "trane", "lennox", "mcp"]
+}
