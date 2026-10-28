@@ -111,3 +111,10 @@ Order: publish the GitHub repo first (every registry below reads it), then the o
   | Contact Email | the team address the manager chooses |
   | Submission plan | Free |
 - **Delay:** free plan, review within 2 weeks. Premium ($39) promises 24 hours; not needed.
+
+## 7. M8ven (Trust Index)
+
+- **Method:** auto-indexed from GitHub (`github_repo_search`), listing `https://m8ven.ai/mcp/myleadtech/myleadtech-mcp`. Claimed 2026-10-28 with `mrfreeze.copilot@gmail.com`.
+- **Ownership proof:** the M8ven badge line in `README.md` (section *Listings*) carries the claim token (`?v=…`). Do not remove or edit it.
+- **Grade:** none. M8ven scores source code; this repo has none, so the badge reads "no source to read". Expected, not a defect.
+- **Not done on purpose:** the "Live Monitored" GitHub App (org-wide read access, nothing to scan here) and the second, score-only badge (it would show the same grey state).

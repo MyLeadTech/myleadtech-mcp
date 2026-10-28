@@ -131,6 +131,10 @@ Response shape (**contract example** `ar-00/1`, `answer/ok.json`, copied unchang
 - Site: https://myleadtech.app
 - Get an API key: https://web.myleadtech.app
 
+## Listings
+
+[![M8ven Score](https://m8ven.ai/badge/mcp/myleadtech-myleadtech-mcp-80gruo?v=7788eff4930294da1b7424d406e89d3f)](https://m8ven.ai/mcp/myleadtech-myleadtech-mcp-80gruo?s=readme)
+
 ## License
 
 MIT, for the files in this repository only (README and configuration). The MyLeadTech service and the manufacturer documents it cites are not covered.
