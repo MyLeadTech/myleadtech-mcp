@@ -18,7 +18,7 @@ This repository holds the connection details and registry metadata for the hoste
 | `search_hvac_documents` | Finds passages and citations in manufacturer documents. | `question`, `brand`, `model_reference`, `fault_code`, `language`, `limit` (default 5), `operation_id` |
 | `get_hvac_source` | Returns a cited passage with bounded context. | `source_id` |
 | `answer_hvac_question` | A written answer with numbered, page-level sources. | `question`, `brand`, `model_reference`, `fault_code`, `language`, `limit` (default 5), `operation_id` |
-| `get_hvac_document_page` | A source page as PNG, or a signed single-page PDF link when `format` is `pdf`. | `document_version_id`, `page_number`, `format` (default `png`), `region` |
+| `get_hvac_document_page` | A source manual page as a PNG image (PDF output is not available). | `document_version_id`, `page_number`, `format` (`png` only), `region` |
 
 `operation_id` makes a retry replay the earlier result instead of charging again.
 
