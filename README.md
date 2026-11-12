@@ -7,7 +7,8 @@ This repository holds the connection details and registry metadata for the hoste
 - **Endpoint:** `https://mcp.myleadtech.app/mcp/`
 - **Transport:** Streamable HTTP
 - **Auth:** API key from the [MyLeadTech dashboard](https://web.myleadtech.app), sent as `Authorization: Bearer <api_key>`. The site also lists OAuth sign-in with a MyLeadTech account for clients that support it.
-- **Brands served:** Carrier, Trane, Lennox
+- **Brands served:** the top 50 US HVAC brands — full list: [myleadtech.app/brands](https://myleadtech.app/brands)
+- **Fault codes:** browsable example — [Carrier fault code index](https://myleadtech.app/brands/carrier/codes)
 - **Sandbox:** 100 free units a month. Equipment lookups and clarifying questions don't count. A retried request with the same idempotency key is never charged twice.
 
 ## Tools
