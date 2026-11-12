@@ -66,6 +66,17 @@ Paste into `.vscode/mcp.json`:
 }
 ```
 
+### Run it locally (stdio)
+
+The repository also ships a local stdio server with the same five tools. It calls the MyLeadTech REST API with your key; no manual or index is bundled in this repository.
+
+```bash
+pip install .
+MYLEADTECH_API_KEY=<your key> myleadtech-mcp
+```
+
+Optional: `MYLEADTECH_API_URL` (default `https://api.myleadtech.app`). Requires Python 3.10+.
+
 ### Other clients
 
 Any MCP client that supports remote Streamable HTTP servers: endpoint `https://mcp.myleadtech.app/mcp/`, header `Authorization: Bearer <api_key>`.

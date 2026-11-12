@@ -2,3 +2,7 @@
 key.pem
 mcp-registry-auth
 .mcpregistry_*
+__pycache__/
+*.egg-info/
+build/
+.venv/
