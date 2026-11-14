@@ -21,7 +21,7 @@ This repository holds the connection details and registry metadata for the hoste
 | `answer_hvac_question` | A written answer with numbered, page-level sources. | `question`, `brand`, `model_reference`, `fault_code`, `language`, `limit` (default 5), `operation_id` |
 | `get_hvac_document_page` | Page or zone cited, as a PNG image. The PDF is not provided. | `document_version_id`, `page_number`, `format` (`png` only), `region` |
 
-`operation_id` makes a retry replay the earlier result instead of charging again.
+`operation_id` makes a retry replay the earlier result instead of charging again. `answer_hvac_question` also accepts `audience` (`technician`, the default, or `homeowner`).
 
 ## Install
 
@@ -68,7 +68,9 @@ Paste into `.vscode/mcp.json`:
 
 ### Run it locally (stdio)
 
-The repository also ships a local stdio server with the same tools as the hosted server (current set listed in `myleadtech_mcp/server.py`). It calls the MyLeadTech REST API with your key; no manual or index is bundled in this repository.
+The repository also ships a local stdio server. It calls the MyLeadTech REST API with your key; no manual or index is bundled in this repository.
+
+Tools: the five above plus `get_usage` (units used and left, not charged). `lookup_fault_code` is registered only when you set `MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE=1`, and only works against an API version that serves it.
 
 ```bash
 pip install .
@@ -76,6 +78,8 @@ MYLEADTECH_API_KEY=<your key> myleadtech-mcp
 ```
 
 Optional: `MYLEADTECH_API_URL` (default `https://api.myleadtech.app`). Requires Python 3.10+.
+
+Retries: a `429 rate_limited`, `503`, `504` or network timeout is retried up to 3 times, always with the same idempotency key, so the request is charged once. `quota_exceeded`, `not_entitled`, `conflict` and other 4xx are never retried. Errors read `<code>: <message> (request_id=...)`; quote the `request_id` to support.
 
 ### Other clients
 

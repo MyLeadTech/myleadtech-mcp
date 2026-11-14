@@ -1,6 +1,6 @@
 [project]
 name = "myleadtech-mcp"
-version = "0.2.0"
+version = "0.3.0"
 description = "MyLeadTech HVAC MCP server (stdio): model lookup and answers cited to the OEM manual page."
 readme = "README.md"
 license = { text = "MIT" }

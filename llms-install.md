@@ -29,4 +29,4 @@ This is a **remote** MCP server. There is nothing to clone, build or run locally
 
 ## Tools
 
-`resolve_equipment`, `search_hvac_documents`, `get_hvac_source`, `answer_hvac_question`, `get_hvac_document_page`. All are read-only. Details and examples: https://myleadtech.app/developers/mcp
+`resolve_equipment`, `search_hvac_documents`, `get_hvac_source`, `answer_hvac_question`, `get_hvac_document_page`. All are read-only. The local stdio server (this repository) adds `get_usage`. Details and examples: https://myleadtech.app/developers/mcp

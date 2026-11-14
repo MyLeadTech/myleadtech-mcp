@@ -3,7 +3,7 @@
   "name": "app.myleadtech/mcp",
   "title": "MyLeadTech HVAC",
   "description": "HVAC MCP server — model lookup and answers cited to the OEM manual page.",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "websiteUrl": "https://myleadtech.app/developers/mcp",
   "repository": {
     "url": "https://github.com/MyLeadTech/myleadtech-mcp",
