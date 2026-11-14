@@ -1,7 +1,7 @@
 """MyLeadTech HVAC MCP server (stdio).
 
-Local MCP server: it runs on your machine and exposes six read-only tools
-(seven with the optional lookup_fault_code, see below).
+Local MCP server: it runs on your machine and exposes the same seven read-only
+tools as the hosted server (https://mcp.myleadtech.app/mcp/).
 Each tool calls the MyLeadTech REST API (https://api.myleadtech.app/v1) with your
 API key. The manuals and the index stay on the MyLeadTech side: nothing is
 bundled here, and the key decides what you can read and how many units you use.
@@ -9,9 +9,9 @@ bundled here, and the key decides what you can read and how many units you use.
 Environment:
   MYLEADTECH_API_KEY   required, key from https://web.myleadtech.app
   MYLEADTECH_API_URL   optional, defaults to https://api.myleadtech.app
-  MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE=1
-                       optional: also register lookup_fault_code (only when the API you
-                       call serves it; it is off by default)
+  MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE=0
+                       optional: do not register lookup_fault_code (on by default since
+                       the API serves it, 14/11/2026)
 
 Retries: 429 rate_limited, 503, 504 and network timeouts are retried at most 3 times,
 always with the SAME Idempotency-Key as the first attempt, so a retried request is
@@ -134,11 +134,14 @@ def _json(response: httpx.Response) -> dict[str, Any]:
         raise RuntimeError(f"invalid_response: not JSON (request_id={response.headers.get('X-Request-Id')})") from None
 
 
-def _query(question: str, brand, model_reference, fault_code, language, limit) -> dict[str, Any]:
+def _query(question: str, brand, model_reference, fault_code, language, limit,
+           max_chars: int | None = None) -> dict[str, Any]:
     body: dict[str, Any] = {"question": question, "language": language, "limit": limit}
     for name, value in (("brand", brand), ("model_reference", model_reference), ("fault_code", fault_code)):
         if value:
             body[name] = value
+    if max_chars is not None:  # absent = défaut serveur (480) : même empreinte d'idempotence qu'avant
+        body["max_chars"] = max_chars
     return body
 
 
@@ -166,9 +169,9 @@ def resolve_equipment(reference: str, market: str = "us", language: str = "en-US
 )
 def search_hvac_documents(question: str, brand: str | None = None, model_reference: str | None = None,
                           fault_code: str | None = None, language: str = "en-US", limit: int = 5,
-                          operation_id: str | None = None) -> dict[str, Any]:
+                          max_chars: int | None = None, operation_id: str | None = None) -> dict[str, Any]:
     return _json(_call("POST", "/v1/search",
-                       json=_query(question, brand, model_reference, fault_code, language, limit),
+                       json=_query(question, brand, model_reference, fault_code, language, limit, max_chars),
                        idempotency=operation_id or str(uuid.uuid4())))
 
 
@@ -185,14 +188,15 @@ def get_hvac_source(source_id: str) -> dict[str, Any]:
 @mcp.tool(
     name="answer_hvac_question",
     title="Answer HVAC question",
-    description="Answer an HVAC service question with citations to the OEM manual page it came from. Returns empty rather than guessing when no source supports an answer. Billed: 1 unit when status is ok. audience: technician (default) or homeowner.",
+    description="Answer an HVAC service question with citations to the OEM manual page it came from. Returns empty rather than guessing when no source supports an answer. Billed: 1 unit when status is ok and at least one claim rests on a source established for the equipment; an ok answer from documentation not confirmed for the unit is not billed (usage.debited=false). audience: technician (default) or homeowner.",
     annotations=_read("Answer HVAC question", billed=True),
 )
 def answer_hvac_question(question: str, brand: str | None = None, model_reference: str | None = None,
                          fault_code: str | None = None, language: str = "en-US", limit: int = 5,
                          operation_id: str | None = None,
-                         audience: Literal["technician", "homeowner"] = "technician") -> dict[str, Any]:
-    body = _query(question, brand, model_reference, fault_code, language, limit)
+                         audience: Literal["technician", "homeowner"] = "technician",
+                         max_chars: int | None = None) -> dict[str, Any]:
+    body = _query(question, brand, model_reference, fault_code, language, limit, max_chars)
     if audience != "technician":  # défaut absent du corps : même empreinte qu'avant
         body["audience"] = audience
     return _json(_call("POST", "/v1/answers", json=body, idempotency=operation_id or str(uuid.uuid4())))
@@ -217,7 +221,7 @@ def get_hvac_document_page(document_version_id: str, page_number: int, region: s
 @mcp.tool(
     name="get_usage",
     title="Get usage",
-    description="Units used and left in the current monthly window. Not billed.",
+    description="Return the account's plan, monthly allowance, units used and remaining, and the end of the current window (window_end). Not billed. API keys need any MyLeadTech scope; OAuth needs usage.read.",
     annotations=_read("Get usage"),
 )
 def get_usage() -> dict[str, Any]:
@@ -236,13 +240,14 @@ def lookup_fault_code(code: str, brand: str | None = None, model_reference: str 
 
 
 def register_optional_tools() -> None:
-    """lookup_fault_code : seulement si l'API appelée le sert et que le drapeau est posé."""
-    if os.environ.get("MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE") == "1":
+    """lookup_fault_code : actif par défaut (servi par l'API depuis le 14/11/2026) ; drapeau à 0 = retiré."""
+    if os.environ.get("MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE", "1") != "0":
         mcp.tool(
             name="lookup_fault_code",
             title="Look up a fault code",
-            description="Published meaning of an HVAC fault code, verbatim from the manual, with its page. "
-                        "Billed: 1 unit when status is ok.",
+            description="Look up a published fault code and return its meaning quoted verbatim from the OEM "
+                        "manual, with citations. No generation. A missing brand returns a clarification and an "
+                        "unpublished code returns empty; neither is billed. Billed: 1 unit when status is ok.",
             annotations=_read("Look up a fault code", billed=True),
         )(lookup_fault_code)
 

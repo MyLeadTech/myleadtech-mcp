@@ -1,6 +1,8 @@
 # Registry submissions
 
-Researched 2026-10-18 from each registry's own docs and forms. Nothing here has been submitted. Re-check each form before sending; several of these change often.
+Researched 2026-10-18 from each registry's own docs and forms. Re-check each form before sending; several of these change often.
+
+**Update 2026-11-14.** The hosted server exposes 7 tools (`resolve_equipment`, `search_hvac_documents`, `get_hvac_source`, `get_hvac_document_page`, `answer_hvac_question`, `lookup_fault_code`, `get_usage`), contract `ar-00/1`; its live card is `https://mcp.myleadtech.app/.well-known/mcp/server-card.json` (no need for the minimal card below). The stdio server is `0.4.0` (same 7 tools). The repository history was rewritten on 2026-11-14: any commit SHA pinned by a registry before that date (Glama included) no longer exists and must be re-pinned to the current `main`.
 
 Common values:
 

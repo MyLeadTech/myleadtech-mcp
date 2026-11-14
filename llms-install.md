@@ -25,8 +25,8 @@ This is a **remote** MCP server. There is nothing to clone, build or run locally
    ```
 
    Replace `MYLEADTECH_API_KEY` with the user's key.
-3. Check the connection by calling `resolve_equipment` with `{"reference": "27TPA836A0030"}`. It is not billed. A `401` means the key is missing or wrong.
+3. Check the connection by calling `get_usage` (no arguments). It is not billed and returns the plan and units left. A `401` means the key is missing or wrong.
 
 ## Tools
 
-`resolve_equipment`, `search_hvac_documents`, `get_hvac_source`, `answer_hvac_question`, `get_hvac_document_page`. All are read-only. The local stdio server (this repository) adds `get_usage`. Details and examples: https://myleadtech.app/developers/mcp
+Seven read-only tools: `resolve_equipment`, `search_hvac_documents`, `get_hvac_source`, `get_hvac_document_page`, `answer_hvac_question`, `lookup_fault_code`, `get_usage`. The local stdio server in this repository exposes the same seven. Billing, limits and errors: https://myleadtech.app/developers/docs ; install guide: https://myleadtech.app/developers/mcp

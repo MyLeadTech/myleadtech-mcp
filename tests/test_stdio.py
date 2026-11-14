@@ -144,16 +144,33 @@ class TestStdio(unittest.TestCase):
     def test_outils_exposes(self):
         noms = {t.name for t in asyncio.run(server.mcp.list_tools())}
         self.assertEqual(noms, {"resolve_equipment", "search_hvac_documents", "get_hvac_source",
-                                "answer_hvac_question", "get_hvac_document_page", "get_usage"})
+                                "answer_hvac_question", "get_hvac_document_page", "get_usage",
+                                "lookup_fault_code"})  # 7 outils = server-card en production (14/11)
 
-    def test_lookup_fault_code_derriere_drapeau(self):
+    def test_lookup_fault_code_retire_par_drapeau_0(self):
         import os
-        os.environ["MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE"] = "1"
-        self.addCleanup(os.environ.pop, "MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE", None)
-        server.register_optional_tools()
-        noms = {t.name for t in asyncio.run(server.mcp.list_tools())}
-        self.assertIn("lookup_fault_code", noms)
         server.mcp._tool_manager._tools.pop("lookup_fault_code", None)
+        os.environ["MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE"] = "0"
+        try:
+            server.register_optional_tools()
+            noms = {t.name for t in asyncio.run(server.mcp.list_tools())}
+            self.assertNotIn("lookup_fault_code", noms)
+        finally:
+            os.environ.pop("MYLEADTECH_ENABLE_LOOKUP_FAULT_CODE", None)
+            server.register_optional_tools()  # rétablit l'état par défaut
+        self.assertIn("lookup_fault_code", {t.name for t in asyncio.run(server.mcp.list_tools())})
+
+    def test_max_chars_transmis_seulement_si_pose(self):
+        f = self.faux([OK])
+        server.search_hvac_documents("q")
+        server.answer_hvac_question("q", max_chars=300)
+        self.assertNotIn("max_chars", f.corps[0])
+        self.assertEqual(f.corps[1]["max_chars"], 300)
+
+    def test_facturation_answer_exacte(self):
+        desc = {t.name: t.description for t in asyncio.run(server.mcp.list_tools())}
+        self.assertIn("established", desc["answer_hvac_question"])
+        self.assertNotIn("Billed: 1 unit when status is ok. audience", desc["answer_hvac_question"])
 
     def test_aucun_id_reel_dans_les_fichiers_publies(self):
         uuid_re = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
